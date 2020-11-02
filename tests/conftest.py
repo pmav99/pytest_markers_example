@@ -3,6 +3,10 @@
 import pytest
 
 
+SKIP_SCHISM = pytest.mark.skip(reason="need --runshism option to run")
+SKIP_DELFT = pytest.mark.skip(reason="need --rundelft option to run")
+
+
 def pytest_addoption(parser):
     parser.addoption(
         "--runschism", action="store_true", default=False, help="run schism tests"
@@ -15,11 +19,9 @@ def pytest_addoption(parser):
 def pytest_collection_modifyitems(config, items):
     should_run_schism = config.getoption("--runschism")
     should_run_delft = config.getoption("--rundelft")
-    skip_schism = pytest.mark.skip(reason="need --runshism option to run")
-    skip_delft = pytest.mark.skip(reason="need --rundelft option to run")
 
     for item in items:
         if "schism" in item.keywords and not should_run_schism:
-            item.add_marker(skip_schism)
+            item.add_marker(SKIP_SCHISM)
         if "delft" in item.keywords and not should_run_delft:
-            item.add_marker(skip_delft)
+            item.add_marker(SKIP_DELFT)
